@@ -1,11 +1,16 @@
 # hexlet-path-size
 
-CLI utility for calculating file and directory sizes
+Utility for calculating file and directory sizes
 
 [![Actions Status](https://github.com/i1yas/go-from-scratch-project-242/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/i1yas/go-from-scratch-project-242/actions)
 
-## Usage
+## Usage in Go
+```go
+size, err := code.GetPathSize(path, isRecursive, isHumanReadable, includeHidden)
+```
 
+
+## Usage in CLI
 ```bash
 make build # build
 ./bin/hexlet-path-size my-file # run binary from bin
