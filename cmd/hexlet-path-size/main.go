@@ -49,6 +49,11 @@ func main() {
 			includeHidden := cmd.Bool("all")
 			isRecursive := cmd.Bool("recursive")
 
+			if path == "" {
+				cli.ShowAppHelp(cmd)
+				return nil
+			}
+
 			size, err := code.GetPathSize(path, isRecursive, isHumanReadable, includeHidden)
 
 			if err != nil {
