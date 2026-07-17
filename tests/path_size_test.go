@@ -27,7 +27,7 @@ func TestGetPathSize_File(t *testing.T) {
 				t.Fatalf("File '%s' not found in testdata", tCase.filename)
 			}
 
-			size, err := code.GetPathSize(path, false)
+			size, err := code.GetPathSize(path, false, false)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)
@@ -57,7 +57,37 @@ func TestGetPathSize_Dir(t *testing.T) {
 				t.Fatalf("File '%s' not found in testdata", tCase.dirname)
 			}
 
-			size, err := code.GetPathSize(path, tCase.includeHidden)
+			size, err := code.GetPathSize(path, tCase.includeHidden, false)
+
+			require.NoError(t, err)
+			require.Equal(t, tCase.size, size)
+		})
+	}
+}
+
+func TestGetPathSize_Dir_Recursive(t *testing.T) {
+	type DirTestCase struct {
+		dirname       string
+		size          int64
+		includeHidden bool
+	}
+
+	cases := []DirTestCase{
+		{dirname: "empty_dir", size: 0},
+		{dirname: "dir_with_one_file", size: 6},
+		{dirname: "dir_with_nested_dir", size: 12},
+		{dirname: "dir_with_hidden_files", size: 6},
+		{dirname: "dir_with_hidden_files", size: 18, includeHidden: true},
+	}
+
+	for _, tCase := range cases {
+		t.Run(tCase.dirname, func(t *testing.T) {
+			path, err := filepath.Abs("../testdata/" + tCase.dirname)
+			if err != nil {
+				t.Fatalf("File '%s' not found in testdata", tCase.dirname)
+			}
+
+			size, err := code.GetPathSize(path, tCase.includeHidden, true)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)

@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func GetPathSize(path string, includeHidden bool) (int64, error) {
+func GetPathSize(path string, includeHidden bool, isRecursive bool) (int64, error) {
 	fileInfo, err := os.Lstat(path)
 	if err != nil {
 		return 0, err
@@ -27,11 +27,21 @@ func GetPathSize(path string, includeHidden bool) (int64, error) {
 			return 0, err
 		}
 
-		if fileInfo.IsDir() {
+		if !includeHidden && strings.HasPrefix(entry.Name(), ".") {
 			continue
 		}
 
-		if !includeHidden && strings.HasPrefix(entry.Name(), ".") {
+		if fileInfo.IsDir() {
+			if !isRecursive {
+				continue
+			}
+
+			dirSize, err := GetPathSize(path+"/"+entry.Name(), includeHidden, isRecursive)
+			if err != nil {
+				return 0, nil
+			}
+			totalSize += dirSize
+
 			continue
 		}
 
