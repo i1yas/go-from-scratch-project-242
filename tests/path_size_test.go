@@ -54,7 +54,7 @@ func TestGetPathSize_Dir(t *testing.T) {
 		t.Run(tCase.dirname, func(t *testing.T) {
 			path, err := filepath.Abs("../testdata/" + tCase.dirname)
 			if err != nil {
-				t.Fatalf("File '%s' not found in testdata", tCase.dirname)
+				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
 			}
 
 			size, err := code.GetPathSize(path, tCase.includeHidden, false)
@@ -84,7 +84,7 @@ func TestGetPathSize_Dir_Recursive(t *testing.T) {
 		t.Run(tCase.dirname, func(t *testing.T) {
 			path, err := filepath.Abs("../testdata/" + tCase.dirname)
 			if err != nil {
-				t.Fatalf("File '%s' not found in testdata", tCase.dirname)
+				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
 			}
 
 			size, err := code.GetPathSize(path, tCase.includeHidden, true)
