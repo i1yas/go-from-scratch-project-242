@@ -7,7 +7,8 @@ CLI utility for calculating file and directory sizes
 ## Usage
 
 ```bash
-./bin/hexlet-path-size my-file
+make build # build
+./bin/hexlet-path-size my-file # run binary from bin
 ```
 
 ### Human-readable format
@@ -30,7 +31,7 @@ By default counts only first level of directory.
 
 ### Include hidden files
 
-By default does not count hidden files starting with `.`
+By default does not count hidden files (starting with `.`)
 
 ```bash
 ./bin/hexlet-path-size -a my-dir
@@ -38,4 +39,5 @@ By default does not count hidden files starting with `.`
 ```
 
 ### Example
+
 [![asciicast](https://asciinema.org/a/ceVnx26DHQAauxkv.svg)](https://asciinema.org/a/ceVnx26DHQAauxkv)
