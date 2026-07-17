@@ -21,6 +21,11 @@ func main() {
 				Usage:   "print size in human-readable format",
 				Aliases: []string{"H"},
 			},
+			&cli.BoolFlag{
+				Name:    "all",
+				Usage:   "include hidden files and directories",
+				Aliases: []string{"a"},
+			},
 		},
 		Arguments: []cli.Argument{
 			&cli.StringArg{
@@ -30,8 +35,9 @@ func main() {
 		Action: func(ctx context.Context, cmd *cli.Command) error {
 			path := cmd.StringArg("path")
 			isHumanFormat := cmd.Bool("human")
+			includeHidden := cmd.Bool("all")
 
-			size, err := code.GetPathSize(path)
+			size, err := code.GetPathSize(path, includeHidden)
 
 			if err != nil {
 				return err

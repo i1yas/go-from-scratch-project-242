@@ -27,7 +27,7 @@ func TestGetPathSize_File(t *testing.T) {
 				t.Fatalf("File '%s' not found in testdata", tCase.filename)
 			}
 
-			size, err := code.GetPathSize(path)
+			size, err := code.GetPathSize(path, false)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)
@@ -37,14 +37,17 @@ func TestGetPathSize_File(t *testing.T) {
 
 func TestGetPathSize_Dir(t *testing.T) {
 	type DirTestCase struct {
-		dirname string
-		size    int64
+		dirname       string
+		size          int64
+		includeHidden bool
 	}
 
 	cases := []DirTestCase{
 		{dirname: "empty_dir", size: 0},
 		{dirname: "dir_with_one_file", size: 6},
 		{dirname: "dir_with_nested_dir", size: 6},
+		{dirname: "dir_with_hidden_files", size: 6},
+		{dirname: "dir_with_hidden_files", size: 18, includeHidden: true},
 	}
 
 	for _, tCase := range cases {
@@ -54,7 +57,7 @@ func TestGetPathSize_Dir(t *testing.T) {
 				t.Fatalf("File '%s' not found in testdata", tCase.dirname)
 			}
 
-			size, err := code.GetPathSize(path)
+			size, err := code.GetPathSize(path, tCase.includeHidden)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)

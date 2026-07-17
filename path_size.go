@@ -1,8 +1,11 @@
 package code
 
-import "os"
+import (
+	"os"
+	"strings"
+)
 
-func GetPathSize(path string) (int64, error) {
+func GetPathSize(path string, includeHidden bool) (int64, error) {
 	fileInfo, err := os.Lstat(path)
 	if err != nil {
 		return 0, err
@@ -25,6 +28,10 @@ func GetPathSize(path string) (int64, error) {
 		}
 
 		if fileInfo.IsDir() {
+			continue
+		}
+
+		if !includeHidden && strings.HasPrefix(entry.Name(), ".") {
 			continue
 		}
 
