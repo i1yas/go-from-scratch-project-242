@@ -10,19 +10,24 @@ import (
 )
 
 func main() {
-	var path string
 	cmd := &cli.Command{
 		Name:      "hexlet-path-size",
 		Usage:     "print size of a file or directory",
 		ArgsUsage: "<path>",
 		Arguments: []cli.Argument{
 			&cli.StringArg{
-				Name:        "path",
-				Destination: &path,
+				Name: "path",
 			},
 		},
-		Action: func(context.Context, *cli.Command) error {
-			fmt.Println("Hello from Hexlet!")
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			path := cmd.StringArg("path")
+
+			size, err := GetPathSize(path)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("%dB\t%s\n", size, path)
 			return nil
 		},
 	}
@@ -30,4 +35,31 @@ func main() {
 	if err := cmd.Run(context.Background(), os.Args); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func GetPathSize(path string) (int64, error) {
+	fileInfo, err := os.Lstat(path)
+	if err != nil {
+		return 0, err
+	}
+
+	if !fileInfo.IsDir() {
+		return fileInfo.Size(), nil
+	}
+
+	dirEntries, err := os.ReadDir(path)
+	if err != nil {
+		return 0, err
+	}
+
+	totalSize := int64(0)
+	for _, entry := range dirEntries {
+		fileInfo, err := entry.Info()
+		if err != nil {
+			return 0, err
+		}
+		totalSize += fileInfo.Size()
+	}
+
+	return totalSize, nil
 }
