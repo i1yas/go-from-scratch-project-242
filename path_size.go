@@ -92,5 +92,9 @@ func formatFileSize(size int64, isHumanReadable bool) string {
 
 	sizeInUnit := float32(size) / float32(unit.size)
 
+	if unit.postfix == "B" {
+		return fmt.Sprintf("%dB", size)
+	}
+
 	return fmt.Sprintf("%.1f%s", sizeInUnit, unit.postfix)
 }
