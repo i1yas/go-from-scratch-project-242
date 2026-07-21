@@ -13,8 +13,14 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 		return 0, fmt.Errorf("Failed to read info for path '%s': %w", path, err)
 	}
 
-	if !fileInfo.IsDir() {
+	fileMode := fileInfo.Mode()
+
+	if isSupportedFileType(fileMode) {
 		return fileInfo.Size(), nil
+	}
+
+	if !fileInfo.IsDir() {
+		return 0, fmt.Errorf("Got unsupported file type: %s", getHumanReadableFileType(fileMode))
 	}
 
 	dirEntries, err := os.ReadDir(path)
@@ -48,9 +54,36 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 			continue
 		}
 
-		totalSize += fileInfo.Size()
+		fileMode := fileInfo.Mode()
 
+		if isSupportedFileType(fileMode) {
+			totalSize += fileInfo.Size()
+		}
 	}
 
 	return totalSize, nil
+}
+
+func getHumanReadableFileType(mode os.FileMode) string {
+	fileType := mode.Type()
+	switch {
+	case mode.IsRegular():
+		return "regular file"
+	case fileType == os.ModeDir:
+		return "directory"
+	case fileType == os.ModeSymlink:
+		return "symbolic link"
+	case fileType == os.ModeDevice:
+		return "device"
+	case fileType == os.ModeNamedPipe:
+		return "named pipe"
+	case fileType == os.ModeSocket:
+		return "socket"
+	default:
+		return "unknown type"
+	}
+}
+
+func isSupportedFileType(fileMode os.FileMode) bool {
+	return fileMode.IsRegular() || fileMode.Type() == os.ModeSymlink
 }
