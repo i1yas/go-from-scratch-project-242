@@ -3,6 +3,7 @@ package main
 import (
 	"code"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 
@@ -48,9 +49,13 @@ func main() {
 			includeHidden := cmd.Bool("all")
 			isRecursive := cmd.Bool("recursive")
 
+			extraArguments := cmd.Args().Len()
+			if extraArguments > 0 {
+				return fmt.Errorf("Expecting one argument (path), got %d more\n", extraArguments)
+			}
+
 			if path == "" {
-				cli.ShowAppHelp(cmd)
-				return nil
+				return errors.New("Missing path")
 			}
 
 			size, err := code.GetPathSize(path, isRecursive, isHumanReadable, includeHidden)
