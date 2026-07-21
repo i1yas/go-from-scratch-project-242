@@ -9,27 +9,44 @@ import (
 
 func TestGetPathSize_File(t *testing.T) {
 	type FileTestCase struct {
-		filename string
-		size     string
+		name            string
+		filename        string
+		size            string
+		isHumanReadable bool
+		hasError        bool
 	}
 
 	cases := []FileTestCase{
-		{filename: "test.txt", size: "6B"},
-		{filename: "test2.txt", size: "11B"},
-		{filename: "empty.txt", size: "0B"},
+		{name: "text.txt raw format", filename: "test.txt", size: "6B", isHumanReadable: false},
+		{name: "text.txt human-readable", filename: "test.txt", size: "6B", isHumanReadable: true},
+
+		{name: "test2.txt raw format", filename: "test2.txt", size: "11B", isHumanReadable: false},
+		{name: "test2.txt human-readable", filename: "test2.txt", size: "11B", isHumanReadable: true},
+
+		{name: "test3.txt raw format", filename: "test3.txt", size: "1343B", isHumanReadable: false},
+		{name: "test3.txt human-readable", filename: "test3.txt", size: "1.3KB", isHumanReadable: true},
+
+		{name: "empty.txt raw format", filename: "empty.txt", size: "0B", isHumanReadable: false},
+		{name: "empty.txt human-readable", filename: "empty.txt", size: "0B", isHumanReadable: true},
+
+		{name: "path does not exist", filename: "does_not_exist.txt", hasError: true},
 	}
 
 	for _, tCase := range cases {
-		t.Run(tCase.filename, func(t *testing.T) {
+		t.Run(tCase.name, func(t *testing.T) {
 			path, err := filepath.Abs(filepath.Join("testdata", tCase.filename))
 			if err != nil {
 				t.Fatalf("File '%s' not found in testdata", tCase.filename)
 			}
 
-			size, err := GetPathSize(path, false, false, false)
+			size, err := GetPathSize(path, false, tCase.isHumanReadable, false)
 
-			require.NoError(t, err)
-			require.Equal(t, tCase.size, size)
+			if tCase.hasError {
+				require.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				require.Equal(t, tCase.size, size)
+			}
 		})
 	}
 }
