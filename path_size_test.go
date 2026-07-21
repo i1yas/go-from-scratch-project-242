@@ -53,55 +53,31 @@ func TestGetPathSize_File(t *testing.T) {
 
 func TestGetPathSize_Dir(t *testing.T) {
 	type DirTestCase struct {
+		name          string
 		dirname       string
 		size          string
+		isRecursive   bool
 		includeHidden bool
 	}
 
 	cases := []DirTestCase{
-		{dirname: "dir_with_one_file", size: "6B"},
-		{dirname: "dir_with_nested_dir", size: "6B"},
-		{dirname: "dir_with_hidden_files", size: "6B"},
-		{dirname: "dir_with_hidden_files", size: "18B", includeHidden: true},
+		{name: "dir with one file", dirname: "dir_with_one_file", size: "6B"},
+
+		{name: "non-recursive exclude-hidden", dirname: "dir_with_hidden_files", size: "6B", isRecursive: false, includeHidden: false},
+		{name: "non-recursive include-hidden", dirname: "dir_with_hidden_files", size: "18B", isRecursive: false, includeHidden: true},
+
+		{name: "recursive exclude-hidden", dirname: "dir_with_nested_dir", size: "12B", isRecursive: true, includeHidden: false},
+		{name: "recursive include-hidden", dirname: "dir_with_nested_dir", size: "24B", isRecursive: true, includeHidden: true},
 	}
 
 	for _, tCase := range cases {
-		t.Run(tCase.dirname, func(t *testing.T) {
+		t.Run(tCase.name, func(t *testing.T) {
 			path, err := filepath.Abs(filepath.Join("testdata", tCase.dirname))
 			if err != nil {
 				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
 			}
 
-			size, err := GetPathSize(path, false, false, tCase.includeHidden)
-
-			require.NoError(t, err)
-			require.Equal(t, tCase.size, size)
-		})
-	}
-}
-
-func TestGetPathSize_Dir_Recursive(t *testing.T) {
-	type DirTestCase struct {
-		dirname       string
-		size          string
-		includeHidden bool
-	}
-
-	cases := []DirTestCase{
-		{dirname: "dir_with_one_file", size: "6B"},
-		{dirname: "dir_with_nested_dir", size: "12B"},
-		{dirname: "dir_with_hidden_files", size: "6B"},
-		{dirname: "dir_with_hidden_files", size: "18B", includeHidden: true},
-	}
-
-	for _, tCase := range cases {
-		t.Run(tCase.dirname, func(t *testing.T) {
-			path, err := filepath.Abs(filepath.Join("testdata", tCase.dirname))
-			if err != nil {
-				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
-			}
-
-			size, err := GetPathSize(path, true, false, tCase.includeHidden)
+			size, err := GetPathSize(path, tCase.isRecursive, false, tCase.includeHidden)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)
