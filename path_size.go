@@ -47,7 +47,7 @@ func getPathSizeRaw(path string, isRecursive bool, includeHidden bool) (int64, e
 
 			dirSize, err := getPathSizeRaw(path+"/"+entry.Name(), isRecursive, includeHidden)
 			if err != nil {
-				return 0, nil
+				return 0, err
 			}
 			totalSize += dirSize
 
