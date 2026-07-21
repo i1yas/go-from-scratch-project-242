@@ -36,7 +36,7 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 			return 0, fmt.Errorf("Failed to read dir entry '%s': %w", dirEntryPath, err)
 		}
 
-		if !includeHidden && strings.HasPrefix(entry.Name(), ".") {
+		if !includeHidden && isHidden(entry.Name()) {
 			continue
 		}
 
@@ -86,4 +86,8 @@ func getHumanReadableFileType(mode os.FileMode) string {
 
 func isSupportedFileType(fileMode os.FileMode) bool {
 	return fileMode.IsRegular() || fileMode.Type() == os.ModeSymlink
+}
+
+func isHidden(name string) bool {
+	return strings.HasPrefix(name, ".")
 }
