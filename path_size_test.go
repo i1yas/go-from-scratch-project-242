@@ -1,7 +1,6 @@
 package code
 
 import (
-	"code"
 	"path/filepath"
 	"testing"
 
@@ -22,12 +21,12 @@ func TestGetPathSize_File(t *testing.T) {
 
 	for _, tCase := range cases {
 		t.Run(tCase.filename, func(t *testing.T) {
-			path, err := filepath.Abs("../testdata/" + tCase.filename)
+			path, err := filepath.Abs(filepath.Join("testdata", tCase.filename))
 			if err != nil {
 				t.Fatalf("File '%s' not found in testdata", tCase.filename)
 			}
 
-			size, err := code.GetPathSize(path, false, false, false)
+			size, err := GetPathSize(path, false, false, false)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)
@@ -52,12 +51,12 @@ func TestGetPathSize_Dir(t *testing.T) {
 
 	for _, tCase := range cases {
 		t.Run(tCase.dirname, func(t *testing.T) {
-			path, err := filepath.Abs("../testdata/" + tCase.dirname)
+			path, err := filepath.Abs(filepath.Join("testdata", tCase.dirname))
 			if err != nil {
 				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
 			}
 
-			size, err := code.GetPathSize(path, false, false, tCase.includeHidden)
+			size, err := GetPathSize(path, false, false, tCase.includeHidden)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)
@@ -82,12 +81,12 @@ func TestGetPathSize_Dir_Recursive(t *testing.T) {
 
 	for _, tCase := range cases {
 		t.Run(tCase.dirname, func(t *testing.T) {
-			path, err := filepath.Abs("../testdata/" + tCase.dirname)
+			path, err := filepath.Abs(filepath.Join("testdata", tCase.dirname))
 			if err != nil {
 				t.Fatalf("Directory '%s' not found in testdata", tCase.dirname)
 			}
 
-			size, err := code.GetPathSize(path, true, false, tCase.includeHidden)
+			size, err := GetPathSize(path, true, false, tCase.includeHidden)
 
 			require.NoError(t, err)
 			require.Equal(t, tCase.size, size)

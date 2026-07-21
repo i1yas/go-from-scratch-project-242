@@ -11,5 +11,5 @@ lint-fix:
 .PHONY: lint-fix
 
 test:
-	go test -v ./tests
+	go test -v ./...
 .PHONY: test
