@@ -1,7 +1,7 @@
 package main
 
 import (
-	"code"
+	"code/internal"
 	"context"
 	"errors"
 	"fmt"
@@ -58,13 +58,13 @@ func main() {
 				return errors.New("Missing path")
 			}
 
-			size, err := code.GetPathSize(path, isRecursive, isHumanReadable, includeHidden)
+			size, err := internal.GetPathSize(path, isRecursive, includeHidden)
 
 			if err != nil {
 				return err
 			}
 
-			fmt.Printf("%s\t%s\n", size, path)
+			fmt.Println(internal.FormatCLIOutput(path, size, isHumanReadable))
 			return nil
 		},
 	}
