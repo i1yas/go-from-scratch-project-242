@@ -3,6 +3,7 @@ package code
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -17,7 +18,7 @@ func GetPathSize(path string, isRecursive bool, isHumanReadable bool, includeHid
 func getPathSizeRaw(path string, isRecursive bool, includeHidden bool) (int64, error) {
 	fileInfo, err := os.Lstat(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("Failed to read info for path '%s': %w", path, err)
 	}
 
 	if !fileInfo.IsDir() {
@@ -26,14 +27,15 @@ func getPathSizeRaw(path string, isRecursive bool, includeHidden bool) (int64, e
 
 	dirEntries, err := os.ReadDir(path)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("Failed to read dir '%s': %w", path, err)
 	}
 
 	totalSize := int64(0)
 	for _, entry := range dirEntries {
 		fileInfo, err := entry.Info()
 		if err != nil {
-			return 0, err
+			dirEntryPath := filepath.Join(path, entry.Name())
+			return 0, fmt.Errorf("Failed to read dir entry '%s': %w", dirEntryPath, err)
 		}
 
 		if !includeHidden && strings.HasPrefix(entry.Name(), ".") {
