@@ -12,9 +12,16 @@ size, err := code.GetPathSize(path, isRecursive, isHumanReadable, includeHidden)
 
 ## Usage in CLI
 
+Command expects exactly one argument - path to file or directory.
+
 ```bash
-make build # build
+make build # build binary
 ./bin/hexlet-path-size my-file # run binary from bin
+```
+
+Output
+```
+105B    my-file
 ```
 
 ### Human-readable format
@@ -24,6 +31,11 @@ By default show size in bytes. When enabled automatically picks appropriate unit
 ```bash
 ./bin/hexlet-path-size -H my-file
 ./bin/hexlet-path-size --human my-file
+```
+
+Output
+```
+1.5MB    my-file
 ```
 
 ### Recursive
