@@ -39,7 +39,7 @@ func FormatSize(size int64, isHumanReadable bool) string {
 }
 
 func FormatCLIOutput(path string, size int64, isHumanReadable bool) string {
-	return fmt.Sprintf("%s\t%s", path, FormatSize(size, isHumanReadable))
+	return fmt.Sprintf("%s\t%s", FormatSize(size, isHumanReadable), path)
 }
 
 func pickUnit(size int64) sizeUnitEntry {
