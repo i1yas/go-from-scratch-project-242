@@ -1,45 +1,54 @@
 package internal
 
-import "fmt"
+import (
+	"fmt"
+)
 
 type sizeUnitEntry struct {
-	size    int64
-	postfix string
+	scale  int
+	suffix string
 }
 
-var sizeUnits = []sizeUnitEntry{
-	{size: int64(1) << 0, postfix: "B"},
-	{size: int64(1) << 10, postfix: "KB"},
-	{size: int64(1) << 20, postfix: "MB"},
-	{size: int64(1) << 30, postfix: "GB"},
-	{size: int64(1) << 40, postfix: "TB"},
-	{size: int64(1) << 50, postfix: "PB"},
-	{size: int64(1) << 60, postfix: "EB"},
+func (u sizeUnitEntry) size() int64 {
+	return int64(1) << (u.scale * 10)
+}
+
+var orderedSizeUnits = []sizeUnitEntry{
+	{scale: 0, suffix: "B"},
+	{scale: 1, suffix: "KB"},
+	{scale: 2, suffix: "MB"},
+	{scale: 3, suffix: "GB"},
+	{scale: 4, suffix: "TB"},
+	{scale: 5, suffix: "PB"},
+	{scale: 6, suffix: "EB"},
 }
 
 func FormatSize(size int64, isHumanReadable bool) string {
-	if !isHumanReadable {
-		return fmt.Sprintf("%dB", size)
+	unit := orderedSizeUnits[0]
+
+	if isHumanReadable {
+		unit = pickUnit(size)
 	}
 
-	unit := sizeUnits[0]
-
-	for _, u := range sizeUnits {
-		if size < u.size {
-			break
-		}
-		unit = u
+	if unit.scale == 0 {
+		return fmt.Sprintf("%d%s", size, unit.suffix)
 	}
 
-	sizeInUnit := float32(size) / float32(unit.size)
-
-	if unit.postfix == "B" {
-		return fmt.Sprintf("%dB", size)
-	}
-
-	return fmt.Sprintf("%.1f%s", sizeInUnit, unit.postfix)
+	sizeInUnit := float32(size) / float32(unit.size())
+	return fmt.Sprintf("%.1f%s", sizeInUnit, unit.suffix)
 }
 
 func FormatCLIOutput(path string, size int64, isHumanReadable bool) string {
 	return fmt.Sprintf("%s\t%s", path, FormatSize(size, isHumanReadable))
+}
+
+func pickUnit(size int64) sizeUnitEntry {
+	unit := orderedSizeUnits[0]
+	for _, u := range orderedSizeUnits[1:] {
+		if size < u.size() {
+			break
+		}
+		unit = u
+	}
+	return unit
 }
