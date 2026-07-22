@@ -68,6 +68,9 @@ func TestGetPathSize_Dir(t *testing.T) {
 
 		{name: "recursive exclude-hidden", dirname: "dir_with_nested_dir", size: "12B", isRecursive: true, includeHidden: false},
 		{name: "recursive include-hidden", dirname: "dir_with_nested_dir", size: "24B", isRecursive: true, includeHidden: true},
+
+		{name: "nested hidden dir exclude-hidden", dirname: "dir_with_hidden_dir", size: "0B", isRecursive: true, includeHidden: false},
+		{name: "nested hidden dir include-hidden", dirname: "dir_with_hidden_dir", size: "6B", isRecursive: true, includeHidden: true},
 	}
 
 	for _, tCase := range cases {
