@@ -51,7 +51,7 @@ func main() {
 
 			extraArguments := cmd.Args().Len()
 			if extraArguments > 0 {
-				return fmt.Errorf("Expecting one argument (path), got %d more\n", extraArguments)
+				return fmt.Errorf("Expecting one argument (path), got %d more", extraArguments)
 			}
 
 			if path == "" {
