@@ -11,7 +11,7 @@ import (
 func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, error) {
 	fileInfo, err := os.Lstat(path)
 	if err != nil {
-		return 0, fmt.Errorf("Failed to read info for path '%s': %w", path, err)
+		return 0, fmt.Errorf("failed to read info for path '%s': %w", path, err)
 	}
 
 	fileMode := fileInfo.Mode()
@@ -21,7 +21,7 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 	}
 
 	if !fileInfo.IsDir() {
-		return 0, fmt.Errorf("Got unsupported file type: %s", getHumanReadableFileType(fileMode))
+		return 0, fmt.Errorf("got unsupported file type: %s", getHumanReadableFileType(fileMode))
 	}
 
 	totalSize := int64(0)
@@ -36,7 +36,7 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 
 		fileInfo, err := entry.Info()
 		if err != nil {
-			return fmt.Errorf("Failed to read dir entry '%s': %w", entryPath, err)
+			return fmt.Errorf("failed to read dir entry '%s': %w", entryPath, err)
 		}
 
 		if fileInfo.IsDir() {
@@ -65,7 +65,7 @@ func GetPathSize(path string, isRecursive bool, includeHidden bool) (int64, erro
 	})
 
 	if err != nil {
-		return 0, fmt.Errorf("Failed to walk dir '%s': %w", path, err)
+		return 0, fmt.Errorf("failed to walk dir '%s': %w", path, err)
 	}
 
 	return totalSize, nil

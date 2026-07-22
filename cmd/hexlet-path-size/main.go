@@ -51,11 +51,11 @@ func main() {
 
 			extraArguments := cmd.Args().Len()
 			if extraArguments > 0 {
-				return fmt.Errorf("Expecting one argument (path), got %d more", extraArguments)
+				return fmt.Errorf("expecting one argument (path), got %d more", extraArguments)
 			}
 
 			if path == "" {
-				return errors.New("Missing path")
+				return errors.New("missing path")
 			}
 
 			size, err := internal.GetPathSize(path, isRecursive, includeHidden)
